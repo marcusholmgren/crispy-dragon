@@ -39,6 +39,7 @@ provider:
               - Ref: serviceUserPool
         audience:
           - Ref: serviceUserPoolClient
+    cors: true
 
   logs:
     httpApi: true
@@ -159,7 +160,7 @@ functions:
 resources:
   Resources:
     HttpApi:
-#     Type: AWS::Serverless::HttpApi
+      Type: AWS::ApiGatewayV2::Api
       DependsOn: serviceUserPool
     serviceUserPool:
       Type: AWS::Cognito::UserPool
