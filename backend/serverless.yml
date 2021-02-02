@@ -20,12 +20,19 @@ service: crispy-dragon
 # Check out our docs for more details
 frameworkVersion: '2'
 
+
+plugins:
+  - serverless-iam-roles-per-function
+  - serverless-python-requirements
 provider:
   name: aws
   runtime: python3.8
   lambdaHashingVersion: 20201221
   environment:
     DOMAIN_SUFFIX: marcus-cripsy-dragon
+    MOVIES_DYNAMODB_TABLE: ${self:service}-movies-${opt:stage, self:provider.stage}
+    TODOS_DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    TODOS_DYNAMODB_USER_INDEX: UserIdIndex
   httpApi:
     authorizers:
       serviceAuthorizer:
@@ -40,6 +47,8 @@ provider:
         audience:
           - Ref: serviceUserPoolClient
     cors: true
+  tracing:
+    lambda: true
 
   logs:
     httpApi: true
@@ -79,6 +88,13 @@ provider:
 #    - exclude-me.py
 #    - exclude-me-dir/**
 
+custom:
+  pythonRequirements:
+    noDeploy:
+      - pytest
+      - boto3
+    pythonBin: python3
+
 package:
   exclude:
     - node_modules/**
@@ -91,20 +107,47 @@ package:
     - requirements.txt
 
 functions:
-  getProfileInfo:
-    handler: profile.get
+#  getProfileInfo:
+#    handler: profile.get
+#    events:
+#      - httpApi:
+#            method: GET
+#            path: /user/profile
+#            authorizer: serviceAuthorizer
+#  createProfileInfo:
+#    handler: profile.post
+#    events:
+#      - httpApi:
+#            method: POST
+#            path: /user/profile
+#            authorizer: serviceAuthorizer
+  addTodoItem:
+    handler: lambda/AddTodo.post
     events:
       - httpApi:
-            method: GET
-            path: /user/profile
-            authorizer: serviceAuthorizer
-  createProfileInfo:
-    handler: profile.post
+          method: POST
+          path: /todos
+          authorizer: serviceAuthorizer
+    iamRoleStatementsName: ${self:service.name}-add-todo-role-${self:provider.stage}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TODOS_DYNAMODB_TABLE}
+
+  addMovie:
+    handler: lambda/AddMovie.put
     events:
       - httpApi:
-            method: POST
-            path: /user/profile
-            authorizer: serviceAuthorizer
+          method: PUT
+          path: /movies
+          authorizer: serviceAuthorizer
+    iamRoleStatementsName: ${self:service.name}-add-movie-role-${self:provider.stage}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MOVIES_DYNAMODB_TABLE}
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -199,3 +242,53 @@ resources:
         UserPoolId:
           Ref: serviceUserPool
         Domain: service-user-pool-domain-${opt:stage, self:provider.stage}-${self:provider.environment.DOMAIN_SUFFIX}
+
+    MoviesTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+#          - AttributeName: "year"
+#            AttributeType: "N"
+          - AttributeName: "user_id"
+            AttributeType: "S"
+          - AttributeName: "title"
+            AttributeType: "S"
+        KeySchema:
+#          - AttributeName: "year"
+#            KeyType: "HASH"  # Partition key
+          - AttributeName: "user_id"
+            KeyType: "HASH"  # Partition key
+          - AttributeName: "title"
+            KeyType: "RANGE"  # Sort key
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.MOVIES_DYNAMODB_TABLE}
+
+    TodosTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "todo_id"
+            AttributeType: "S"
+          - AttributeName: "user_id"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "user_id"
+            KeyType: "HASH"
+          - AttributeName: "todo_id"
+            KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.TODOS_DYNAMODB_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.TODOS_DYNAMODB_USER_INDEX}
+            KeySchema:
+              - AttributeName: "user_id"
+                KeyType: "HASH"
+            Projection:
+              ProjectionType: "ALL"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1

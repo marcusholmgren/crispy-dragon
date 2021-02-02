@@ -1,8 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Amplify from 'aws-amplify';
 import App from './App';
-//import "tailwindcss/tailwind.css";
-import './styles/globals.css'
+import './styles/globals.css';
+
+Amplify.configure({
+  Auth: {
+    region: import.meta.env.SNOWPACK_PUBLIC_REGION,
+    userPoolId: import.meta.env.SNOWPACK_PUBLIC_USER_POOL_ID,
+    userPoolWebClientId: import.meta.env
+      .SNOWPACK_PUBLIC_USER_POOL_WEB_CLIENT_ID,
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
