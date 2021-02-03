@@ -1,6 +1,9 @@
 # crispy-dragon
 Dragon spotting application
 
+## Architectural decision are recorded
+Architectural Decision Records [ADR](./docs/README.md) for this microservice architecture are located in the `/docs` folder.
+
 ## Backend
 
 Built with [Serverless](https://www.serverless.com) framework against [AWS Lambda](https://aws.amazon.com/lambda/)
