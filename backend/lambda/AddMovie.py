@@ -18,40 +18,23 @@ dynamodb = boto3.resource('dynamodb')
 
 def put(event: Dict[str, Any], context):
     data = json.loads(event['body'])
+    errors = []
     if 'title' not in data:
-        logging.error("Validation Failed. Missing required text field.")
+        errors.append("Missing required text field.")
+    if 'year' not in data:
+        errors.append("Missing required year field.")
+    if 'rating' not in data:
+        errors.append("Missing required rating field")
+
+    if len(errors) > 0:
+        logging.error(f"Validation Failed for request: {event['body']}")
         return {
             "statusCode": 400,
-            "body": json.dumps({"error": "Missing required text field."})
+            "body": json.dumps({"errors": errors})
         }
 
     headers = event['headers']
-    # if 'Content-Type' not in headers and headers['content-type'] != 'application/json':
-    #     return {
-    #         "statusCode": 400,
-    #         "body": json.dumps({"error": "Only JSON content type is supported."})
-    #     }
-
-    logging.info(f"Content-Type? {'content-type' not in headers and headers['content-type'] != 'application/json'}")
-    # return {
-    #     "statusCode": 200,
-    #     "body": json.dumps(headers)
-    # }
-
     user_id = parse_user_id(headers['authorization'][len('Bearer '):])
-
-    # timestamp = str(time.time())
-    #
-    # table = dynamodb.Table(os.environ['TODOS_DYNAMODB_TABLE'])
-    #
-    # item = {
-    #     'todo_id': str(uuid.uuid1()),
-    #     'user_id': user_id,
-    #     'text': data['text'],
-    #     'checked': False,
-    #     'createdAt': timestamp,
-    #     # 'updatedAt': timestamp,
-    # }
 
     movie_item = put_movie(user_id, data['title'], int(data['year']), data['plot'], int(data['rating']))
     #logging.info(f"Add {json.dumps(item)}")
