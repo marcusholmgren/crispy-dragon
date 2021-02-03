@@ -1,3 +1,5 @@
+![Crispy Dragon CI](https://github.com/marcusholmgren/crispy-dragon/workflows/Crispy%20Dragon%20CI/badge.svg)
+
 # crispy-dragon
 Dragon spotting application
 
