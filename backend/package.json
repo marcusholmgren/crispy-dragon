@@ -1,0 +1,28 @@
+{
+  "name": "crispy-dragon",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "pytest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcusholmgren/reimagined-todoless.git"
+  },
+  "keywords": [
+    "serverless",
+    "aws",
+    "python"
+  ],
+  "author": "Marcus Holmgren <marcus.holmgren1@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marcusholmgren/reimagined-todoless/issues"
+  },
+  "homepage": "https://github.com/marcusholmgren/reimagined-todoless#readme",
+  "devDependencies": {
+    "serverless-iam-roles-per-function": "^3.1.0",
+    "serverless-python-requirements": "^5.1.0"
+  }
+}
