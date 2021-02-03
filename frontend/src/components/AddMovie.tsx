@@ -27,16 +27,18 @@ export function AddMovie({ onSubmit }: Props) {
 
   async function handleSubmit(event: React.SyntheticEvent<UserFormElement>) {
     event.preventDefault();
-    const el = event.currentTarget.elements;
+    const form = event.currentTarget;
+    const el = form.elements;
     const movie: Movie = {
       title: el.title.value,
       plot: el.plot.value,
       year: Number(el.year.value),
       rating: Number(el.rating.value),
     };
+
     const success = await onSubmit(movie);
     if (success) {
-      event.currentTarget.reset();
+      form.reset()
     }
   }
 
@@ -132,9 +134,10 @@ export function AddMovie({ onSubmit }: Props) {
                   name="rating"
                   autoComplete="rating"
                   required
+                  defaultValue=""
                   className="max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
                 >
-                  <option disabled selected></option>
+                  <option disabled value=""></option>
                   <option value={1}>Avoid at all costs</option>
                   <option value={2}>Don't waist your time</option>
                   <option value={3}>Ok to waist some time</option>

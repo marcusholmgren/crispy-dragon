@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO)
 dynamodb = boto3.resource('dynamodb')
 
 
-def put(event: Dict[str, Any], context):
+def put_handler(event: Dict[str, Any], context):
     data = json.loads(event['body'])
     errors = []
     if 'title' not in data:
