@@ -37,11 +37,11 @@ def put(event: Dict[str, Any], context):
     user_id = parse_user_id(headers['authorization'][len('Bearer '):])
 
     movie_item = put_movie(user_id, data['title'], int(data['year']), data['plot'], int(data['rating']))
-    #logging.info(f"Add {json.dumps(item)}")
+    # logging.info(f"Add {json.dumps(item)}")
     # write the todo to the database
     # response = table.put_item(Item=item, ReturnValues='ALL_OLD')
 
-    #logging.info(f"PutItem response: {response['ResponseMetadata'].keys()}")
+    # logging.info(f"PutItem response: {response['ResponseMetadata'].keys()}")
     # PutItem response: dict_keys(['RequestId', 'HTTPStatusCode', 'HTTPHeaders', 'RetryAttempts']
 
     # create a response
@@ -71,7 +71,6 @@ def put_movie(user_id, title, year, plot, rating):  # , dynamodb=None):
         Item=movie_item
     )
     return movie_item
-
 
 # if __name__ == '__main__':
 #     movie_resp = put_movie("The Big New Movie", 2015,

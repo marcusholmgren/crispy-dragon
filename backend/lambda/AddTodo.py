@@ -17,21 +17,21 @@ dynamodb = boto3.resource('dynamodb')
 
 
 def post(event: Dict[str, Any], context):
-#     body = event['body']
-#     print(body)
-#     new_body = json.loads(body)
-#     result = {
-#         "event_data": event,
-#         "body": new_body
-#     }
-#     response = {
-#         "statusCode": 200,
-#         "body": json.dumps(result)
-#     }
-#     return response
-#
-#
-# def create(event, context):
+    #     body = event['body']
+    #     print(body)
+    #     new_body = json.loads(body)
+    #     result = {
+    #         "event_data": event,
+    #         "body": new_body
+    #     }
+    #     response = {
+    #         "statusCode": 200,
+    #         "body": json.dumps(result)
+    #     }
+    #     return response
+    #
+    #
+    # def create(event, context):
 
     data = json.loads(event['body'])
     if 'text' not in data:

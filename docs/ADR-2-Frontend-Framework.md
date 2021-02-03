@@ -1,4 +1,4 @@
-# ADR2: Use React and Tailwind CSS for forntend
+# ADR2: Use React and Tailwind CSS for frontend
 Date: 2021-02-03
 
 ## Status
