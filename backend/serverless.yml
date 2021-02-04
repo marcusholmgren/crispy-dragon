@@ -121,22 +121,22 @@ functions:
 #            method: POST
 #            path: /user/profile
 #            authorizer: serviceAuthorizer
-  addTodoItem:
-    handler: lambda/AddTodo.post
-    events:
-      - httpApi:
-          method: POST
-          path: /todos
-          authorizer: serviceAuthorizer
-    iamRoleStatementsName: ${self:service.name}-add-todo-role-${self:provider.stage}
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TODOS_DYNAMODB_TABLE}
+#  addTodoItem:
+#    handler: lambda/AddTodo.post
+#    events:
+#      - httpApi:
+#          method: POST
+#          path: /todos
+#          authorizer: serviceAuthorizer
+#    iamRoleStatementsName: ${self:service.name}-add-todo-role-${self:provider.stage}
+#    iamRoleStatements:
+#      - Effect: Allow
+#        Action:
+#          - dynamodb:PutItem
+#        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TODOS_DYNAMODB_TABLE}
 
   addMovie:
-    handler: lambda/AddMovie.put
+    handler: lambda/AddMovie.put_handler
     events:
       - httpApi:
           method: PUT
@@ -147,6 +147,20 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MOVIES_DYNAMODB_TABLE}
+
+  getMovies:
+    handler: lambda/GetMovies.get_handler
+    events:
+      - httpApi:
+          method: GET
+          path: /movies
+          authorizer: serviceAuthorizer
+    iamRoleStatementsName: ${self:service.name}-get-movies-role-${self:provider.stage}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MOVIES_DYNAMODB_TABLE}
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -265,30 +279,30 @@ resources:
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.MOVIES_DYNAMODB_TABLE}
 
-    TodosTable:
-      Type: "AWS::DynamoDB::Table"
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: "todo_id"
-            AttributeType: "S"
-          - AttributeName: "user_id"
-            AttributeType: "S"
-        KeySchema:
-          - AttributeName: "user_id"
-            KeyType: "HASH"
-          - AttributeName: "todo_id"
-            KeyType: "RANGE"
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.TODOS_DYNAMODB_TABLE}
-        GlobalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.TODOS_DYNAMODB_USER_INDEX}
-            KeySchema:
-              - AttributeName: "user_id"
-                KeyType: "HASH"
-            Projection:
-              ProjectionType: "ALL"
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
+#    TodosTable:
+#      Type: "AWS::DynamoDB::Table"
+#      Properties:
+#        AttributeDefinitions:
+#          - AttributeName: "todo_id"
+#            AttributeType: "S"
+#          - AttributeName: "user_id"
+#            AttributeType: "S"
+#        KeySchema:
+#          - AttributeName: "user_id"
+#            KeyType: "HASH"
+#          - AttributeName: "todo_id"
+#            KeyType: "RANGE"
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 1
+#          WriteCapacityUnits: 1
+#        TableName: ${self:provider.environment.TODOS_DYNAMODB_TABLE}
+#        GlobalSecondaryIndexes:
+#          - IndexName: ${self:provider.environment.TODOS_DYNAMODB_USER_INDEX}
+#            KeySchema:
+#              - AttributeName: "user_id"
+#                KeyType: "HASH"
+#            Projection:
+#              ProjectionType: "ALL"
+#            ProvisionedThroughput:
+#              ReadCapacityUnits: 1
+#              WriteCapacityUnits: 1
