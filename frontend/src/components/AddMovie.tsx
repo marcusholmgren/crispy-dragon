@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Button } from './Button';
+import type {MovieRequest} from "../api";
 
 interface FormElements extends HTMLFormControlsCollection {
   title: HTMLInputElement;
@@ -13,15 +14,10 @@ interface UserFormElement extends HTMLFormElement {
 }
 
 interface Props {
-  onSubmit: (movie: Movie) => Promise<boolean>;
+  onSubmit: (movie: MovieRequest) => Promise<boolean>;
 }
 
-export interface Movie {
-  title: string;
-  plot: string;
-  year: number;
-  rating: number;
-}
+
 
 export function AddMovie({ onSubmit }: Props) {
 
@@ -29,7 +25,7 @@ export function AddMovie({ onSubmit }: Props) {
     event.preventDefault();
     const form = event.currentTarget;
     const el = form.elements;
-    const movie: Movie = {
+    const movie: MovieRequest = {
       title: el.title.value,
       plot: el.plot.value,
       year: Number(el.year.value),
