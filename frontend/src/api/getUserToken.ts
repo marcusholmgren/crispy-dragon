@@ -1,5 +1,5 @@
-import {Auth} from "aws-amplify";
+import { Auth } from 'aws-amplify';
 
 export async function getUserToken() {
-    return (await Auth.currentSession()).getIdToken().getJwtToken();
+  return (await Auth.currentSession()).getIdToken().getJwtToken();
 }
