@@ -85,6 +85,7 @@ export function UpdateMovie({ movie, onSubmit }: Props) {
                   name="plot"
                   rows={3}
                   defaultValue={movie.info.plot}
+                  autoFocus={true}
                   className="max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
                 ></textarea>
                 <p className="mt-2 text-sm text-gray-500">

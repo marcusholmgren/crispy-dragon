@@ -13,9 +13,11 @@
     "autoprefixer": "^10.2.4",
     "aws-amplify": "^3.3.17",
     "aws-amplify-react": "^4.2.21",
+    "history": "^5.0.0",
     "postcss": "^8.2.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-router-dom": "^6.0.0-beta.0",
     "tailwindcss": "^2.0.2"
   },
   "devDependencies": {
