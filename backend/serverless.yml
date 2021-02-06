@@ -150,6 +150,20 @@ functions:
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MOVIES_DYNAMODB_TABLE}
 
+  deleteMovie:
+    handler: lambda/DeleteMovie.delete_handler
+    events:
+      - httpApi:
+          method: DELETE
+          path: /movies/{title}
+          authorizer: serviceAuthorizer
+    iamRoleStatementsName: ${self:service.name}-delete-movie-role-${self:provider.stage}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MOVIES_DYNAMODB_TABLE}
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

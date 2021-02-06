@@ -66,6 +66,6 @@ def patch_handler(event: Dict[str, Any], context):
     logger.info(f"Update response keys: {response.keys()}")
 
     return {
-        "statusCode": 203,
+        "statusCode": 204,
         "body": json.dumps({})
     }

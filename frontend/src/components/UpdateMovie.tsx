@@ -36,7 +36,7 @@ export function UpdateMovie({ movie, onSubmit }: Props) {
   }
 
   console.log(`UpdateMovie: ${JSON.stringify(movie, null, 2)}`);
-  return (
+  const formEl = movie ? (
     <form
       className="space-y-8 divide-y divide-gray-200"
       onSubmit={handleSubmit}
@@ -169,5 +169,7 @@ export function UpdateMovie({ movie, onSubmit }: Props) {
         <Button type="submit">Save Movie</Button>
       </div>
     </form>
-  );
+  ) : null;
+
+  return formEl;
 }

@@ -22,6 +22,23 @@ export interface UpdateMovieRequest {
   plot: string;
 }
 
+export async function deleteMovie(title: string) {
+  const token = await getUserToken();
+  const response = await fetch(
+    `https://cjn5ioxpab.execute-api.us-east-1.amazonaws.com/movies/${title}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      method: 'DELETE',
+      mode: 'cors',
+      credentials: 'omit',
+    },
+  );
+
+  return response.ok;
+}
+
 export async function updateMovie(title: string, movie: UpdateMovieRequest) {
   const token = await getUserToken();
   const response = await fetch(
