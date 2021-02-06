@@ -1,9 +1,9 @@
-export * from './movies'
-export * from './getUserToken'
+export * from './movies';
+export * from './getUserToken';
 
-import {getUserToken} from "./getUserToken";
+import { getUserToken } from './getUserToken';
 
-import {Auth} from "aws-amplify";
+import { Auth } from 'aws-amplify';
 
 async function getUser() {
   const user = await Auth.currentUserInfo();
@@ -44,5 +44,5 @@ export async function getProfile() {
       )}`,
     );
   }
-  return response.ok
+  return response.ok;
 }

@@ -48,6 +48,7 @@ provider:
           - Ref: serviceUserPoolClient
     cors: true
   tracing:
+    apiGateway: true
     lambda: true
 
   logs:
@@ -107,34 +108,6 @@ package:
     - requirements.txt
 
 functions:
-#  getProfileInfo:
-#    handler: profile.get
-#    events:
-#      - httpApi:
-#            method: GET
-#            path: /user/profile
-#            authorizer: serviceAuthorizer
-#  createProfileInfo:
-#    handler: profile.post
-#    events:
-#      - httpApi:
-#            method: POST
-#            path: /user/profile
-#            authorizer: serviceAuthorizer
-#  addTodoItem:
-#    handler: lambda/AddTodo.post
-#    events:
-#      - httpApi:
-#          method: POST
-#          path: /todos
-#          authorizer: serviceAuthorizer
-#    iamRoleStatementsName: ${self:service.name}-add-todo-role-${self:provider.stage}
-#    iamRoleStatements:
-#      - Effect: Allow
-#        Action:
-#          - dynamodb:PutItem
-#        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TODOS_DYNAMODB_TABLE}
-
   addMovie:
     handler: lambda/AddMovie.put_handler
     events:
@@ -162,6 +135,21 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MOVIES_DYNAMODB_TABLE}
+
+  updateMovie:
+    handler: lambda/UpdateMovie.patch_handler
+    events:
+      - httpApi:
+          method: PATCH
+          path: /movies/{title}
+          authorizer: serviceAuthorizer
+    iamRoleStatementsName: ${self:service.name}-update-movie-role-${self:provider.stage}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MOVIES_DYNAMODB_TABLE}
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

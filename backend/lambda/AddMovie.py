@@ -5,7 +5,7 @@ import os
 import time
 import uuid
 import boto3
-from models.AddItem import parse_user_id
+from models.parse_user_id import parse_user_id
 from aws_xray_sdk.core import patch_all
 
 patch_all()

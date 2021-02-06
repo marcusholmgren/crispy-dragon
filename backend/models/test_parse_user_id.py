@@ -1,6 +1,6 @@
 import pytest
 
-from models.AddItem import parse_user_id
+from models.parse_user_id import parse_user_id
 
 
 def test_parse_user_id_throw_error():
