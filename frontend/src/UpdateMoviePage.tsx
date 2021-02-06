@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import {AppShell, Button, UpdateMovie} from './components';
+import {AppShell, Button, DangerButton, UpdateMovie} from './components';
 import { MoviesDataContext } from './MoviesDataContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import {deleteMovie, updateMovie, UpdateMovieRequest} from './api';
@@ -36,7 +36,9 @@ export function UpdateMoviePage() {
         movie={movies.filter((m) => m.title === title)[0]}
         onSubmit={onSubmit}
       />
-      <Button onClick={onDelete}>Delete Movie</Button>
+      <div className="pt-5 flex flex-row-reverse">
+        <DangerButton onClick={onDelete}>Delete Movie</DangerButton>
+      </div>
     </AppShell>
   );
 }
