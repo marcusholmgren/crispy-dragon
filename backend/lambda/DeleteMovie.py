@@ -5,7 +5,7 @@ import logging
 
 import boto3
 from aws_xray_sdk.core import patch_all
-from models.parse_user_id import parse_user_id
+from utils.parse_user_id import parse_user_id
 
 patch_all()
 
@@ -29,7 +29,6 @@ def delete_movie(user_id: str, title: str):
 
 
 def delete_handler(event: Dict[str, Any], context):
-
     title = event['pathParameters']['title']
     headers = event['headers']
     user_id = parse_user_id(headers['authorization'][len('Bearer '):])

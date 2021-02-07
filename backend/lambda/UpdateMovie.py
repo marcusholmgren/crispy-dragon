@@ -5,7 +5,7 @@ import logging
 
 import boto3
 from aws_xray_sdk.core import patch_all
-from models.parse_user_id import parse_user_id
+from utils.parse_user_id import parse_user_id
 
 patch_all()
 
@@ -39,6 +39,7 @@ def update_movie(user_id: str, title: str, year: int, plot: str, actors: [str]):
 
 # Update movies keys: dict_keys(['version', 'routeKey', 'rawPath', 'rawQueryString', 'headers', 'requestContext', 'pathParameters', 'body', 'isBase64Encoded'])
 # [INFO] 2021-02-04T20:22:42.564Z 64cda66a-c2db-42f5-96f7-d147a6505357 Update movies keys: dict_keys(['version', 'routeKey', 'rawPath', 'rawQueryString', 'headers', 'requestContext', 'pathParameters', 'body', 'isBase64Encoded'])
+# Update response keys: dict_keys(['Attributes', 'ResponseMetadata'])
 
 def patch_handler(event: Dict[str, Any], context):
     data = json.loads(event['body'])
@@ -67,5 +68,5 @@ def patch_handler(event: Dict[str, Any], context):
 
     return {
         "statusCode": 204,
-        "body": json.dumps({})
+        "body": json.dumps({"item": response['Attributes']})
     }

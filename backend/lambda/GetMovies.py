@@ -2,16 +2,13 @@ from typing import Dict, Any
 import json
 import logging
 import os
-import time
-import uuid
 import boto3
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 
-from models.parse_user_id import parse_user_id
+from utils.parse_user_id import parse_user_id
+from utils.decimalencoder import DecimalEncoder
 from aws_xray_sdk.core import patch_all
-
-from models.decimalencoder import DecimalEncoder
 
 patch_all()
 
@@ -39,7 +36,7 @@ def get_movies(user_id):
         response = table.query(
             KeyConditionExpression=Key('user_id').eq(user_id)
         )
-       # return response['Items']
+    # return response['Items']
     except ClientError as e:
         logger.error(e.response['Error']['Message'])
     else:
