@@ -26,7 +26,7 @@ export function UpdateMovie({ movie, onSubmit }: Props) {
     const update: UpdateMovieRequest = {
       plot: el.plot.value,
       year: Number(el.year.value),
-      actors: el.actors.value.split(/\n/),
+      actors: el.actors.value?.split(/[\n,]/),
     };
 
     const success = await onSubmit(movie.title, update);
@@ -36,7 +36,7 @@ export function UpdateMovie({ movie, onSubmit }: Props) {
   }
 
   console.log(`UpdateMovie: ${JSON.stringify(movie, null, 2)}`);
-  return (
+  const formEl = movie ? (
     <form
       className="space-y-8 divide-y divide-gray-200"
       onSubmit={handleSubmit}
@@ -45,10 +45,10 @@ export function UpdateMovie({ movie, onSubmit }: Props) {
         <div className="pt-8 space-y-6 sm:pt-10 sm:space-y-5">
           <div>
             <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Movie
+              Movie {movie.title}
             </h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">
-              Update movie information
+              Update information
             </p>
           </div>
           <div className="space-y-6 sm:space-y-5">
@@ -155,7 +155,7 @@ export function UpdateMovie({ movie, onSubmit }: Props) {
                   id="actors"
                   name="actors"
                   rows={3}
-                  defaultValue={movie.info.actors}
+                  defaultValue={movie.info.actors?.join('\n')}
                   className="max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
                 ></textarea>
                 <p className="mt-2 text-sm text-gray-500">
@@ -169,5 +169,7 @@ export function UpdateMovie({ movie, onSubmit }: Props) {
         <Button type="submit">Save Movie</Button>
       </div>
     </form>
-  );
+  ) : null;
+
+  return formEl;
 }

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { AppShell, UpdateMovie } from './components';
+import {AppShell, Button, DangerButton, UpdateMovie} from './components';
 import { MoviesDataContext } from './MoviesDataContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import { updateMovie, UpdateMovieRequest } from './api';
+import {deleteMovie, updateMovie, UpdateMovieRequest} from './api';
 
 export function UpdateMoviePage() {
   const { movies, setMovies } = useContext(MoviesDataContext);
@@ -17,12 +17,28 @@ export function UpdateMoviePage() {
     return success;
   }
 
+  async function onDelete() {
+    const success = await deleteMovie(title);
+    console.log(movies)
+    debugger
+    if (success) {
+      const filtered = movies.filter(x => x.title !== title)
+      setMovies([...filtered])
+
+      navigate('/');
+    }
+    return success;
+  }
+
   return (
     <AppShell>
       <UpdateMovie
         movie={movies.filter((m) => m.title === title)[0]}
         onSubmit={onSubmit}
       />
+      <div className="pt-5 flex flex-row-reverse">
+        <DangerButton onClick={onDelete}>Delete Movie</DangerButton>
+      </div>
     </AppShell>
   );
 }

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { MovieRequest, putMovie } from './api';
+import { MovieRequest, addMovie } from './api';
 import { AddMovie, AppShell, SimpleSectionHeading } from './components';
 import React from 'react';
 
@@ -7,7 +7,7 @@ export function AddMoviePage() {
   const navigate = useNavigate();
 
   async function onSubmit(movie: MovieRequest) {
-    const success = await putMovie(movie);
+    const success = await addMovie(movie);
 
     if (success) {
       navigate('/');
