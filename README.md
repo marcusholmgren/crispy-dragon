@@ -48,6 +48,16 @@ SNOWPACK_PUBLIC_USER_POOL_WEB_CLIENT_ID=4t3RdWfp5ydwadefjthscrdrcd
 ```
 
 
+## API endpoints
+
+
+*  PUT - https://<http-api-url>.amazonaws.com/movies
+*  GET - https://<http-api-url>.amazonaws.com/movies
+*  PATCH - https://<http-api-url>.amazonaws.com/movies/{title}
+*  DELETE - https://<http-api-url>.amazonaws.com/movies/{title}
+*  POST - https://<http-api-url>.amazonaws.com/movies/{title}/attachment
+
+
 
 ## Resources
 

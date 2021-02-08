@@ -31,8 +31,7 @@ provider:
   environment:
     DOMAIN_SUFFIX: marcus-cripsy-dragon
     MOVIES_DYNAMODB_TABLE: ${self:service}-movies-${opt:stage, self:provider.stage}
-    TODOS_DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
-    TODOS_DYNAMODB_USER_INDEX: UserIdIndex
+    MOVIES_ATTACHMENT_BUCKET: ${self:service}-movies-${self:provider.stage}
   httpApi:
     authorizers:
       serviceAuthorizer:
@@ -47,9 +46,6 @@ provider:
         audience:
           - Ref: serviceUserPoolClient
     cors: true
-  tracing:
-    apiGateway: true
-    lambda: true
 
   logs:
     httpApi: true
@@ -93,7 +89,6 @@ custom:
   pythonRequirements:
     noDeploy:
       - pytest
-      - boto3
     pythonBin: python3
 
 package:
@@ -135,6 +130,10 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MOVIES_DYNAMODB_TABLE}
+      - Effect: Allow
+        Action:
+          - s3:GetObject
+        Resource: arn:aws:s3:::${self:provider.environment.MOVIES_ATTACHMENT_BUCKET}/*
 
   updateMovie:
     handler: lambda/UpdateMovie.patch_handler
@@ -163,6 +162,28 @@ functions:
         Action:
           - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MOVIES_DYNAMODB_TABLE}
+      - Effect: Allow
+        Action:
+          - s3:DeleteObject
+        Resource: arn:aws:s3:::${self:provider.environment.MOVIES_ATTACHMENT_BUCKET}/*
+
+  uploadAttachment:
+    handler: lambda/UploadMovieAttachment.post_handler
+    events:
+      - httpApi:
+          method: POST
+          path: /movies/{title}/attachment
+          authorizer: serviceAuthorizer
+    iamRoleStatementsName: ${self:service.name}-upload-movie-attachment-role-${self:provider.stage}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MOVIES_DYNAMODB_TABLE}
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+        Resource: arn:aws:s3:::${self:provider.environment.MOVIES_ATTACHMENT_BUCKET}/*
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -263,15 +284,11 @@ resources:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions:
-#          - AttributeName: "year"
-#            AttributeType: "N"
           - AttributeName: "user_id"
             AttributeType: "S"
           - AttributeName: "title"
             AttributeType: "S"
         KeySchema:
-#          - AttributeName: "year"
-#            KeyType: "HASH"  # Partition key
           - AttributeName: "user_id"
             KeyType: "HASH"  # Partition key
           - AttributeName: "title"
@@ -281,30 +298,12 @@ resources:
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.MOVIES_DYNAMODB_TABLE}
 
-#    TodosTable:
-#      Type: "AWS::DynamoDB::Table"
-#      Properties:
-#        AttributeDefinitions:
-#          - AttributeName: "todo_id"
-#            AttributeType: "S"
-#          - AttributeName: "user_id"
-#            AttributeType: "S"
-#        KeySchema:
-#          - AttributeName: "user_id"
-#            KeyType: "HASH"
-#          - AttributeName: "todo_id"
-#            KeyType: "RANGE"
-#        ProvisionedThroughput:
-#          ReadCapacityUnits: 1
-#          WriteCapacityUnits: 1
-#        TableName: ${self:provider.environment.TODOS_DYNAMODB_TABLE}
-#        GlobalSecondaryIndexes:
-#          - IndexName: ${self:provider.environment.TODOS_DYNAMODB_USER_INDEX}
-#            KeySchema:
-#              - AttributeName: "user_id"
-#                KeyType: "HASH"
-#            Projection:
-#              ProjectionType: "ALL"
-#            ProvisionedThroughput:
-#              ReadCapacityUnits: 1
-#              WriteCapacityUnits: 1
+    TodoBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.MOVIES_ATTACHMENT_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: [GET, PUT]
+            AllowedOrigins: ['*']

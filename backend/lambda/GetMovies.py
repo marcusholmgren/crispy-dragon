@@ -8,14 +8,26 @@ from botocore.exceptions import ClientError
 
 from utils.parse_user_id import parse_user_id
 from utils.decimalencoder import DecimalEncoder
-from aws_xray_sdk.core import patch_all
 
-patch_all()
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 dynamodb = boto3.resource('dynamodb')
+attachment_s3 = boto3.client('s3')
+
+
+def generate_presigned_url(user_id: str, title: str) -> str:
+    bucket_name = os.environ['MOVIES_ATTACHMENT_BUCKET']
+    object_name = f'{title}-{user_id}'
+    try:
+        return attachment_s3.generate_presigned_url('get_object',
+                                                    Params={'Bucket': bucket_name,
+                                                            'Key': object_name},
+                                                    ExpiresIn=3600)
+    except ClientError as e:
+        logger.error(e)
+    return None
 
 
 def get_movie(user_id, title):
@@ -48,6 +60,11 @@ def get_handler(event: Dict[str, Any], context):
     user_id = parse_user_id(headers['authorization'][len('Bearer '):])
 
     movies = get_movies(user_id)
+    logger.info(f"First movie: {movies[0]}")
+    for movie in movies:
+        if "movie" in movie['info']:
+            movie['info']['movie'] = generate_presigned_url(user_id, movie['title'])
+
     logger.info(f"Get movies: {movies}")
 
     return {

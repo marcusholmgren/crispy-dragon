@@ -22,8 +22,8 @@ export function NavigationTabs({
           name="tabs"
           className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
         >
-          <option selected={activeTab === 'home'}>Your movies</option>
-          <option selected={activeTab === 'add'}>Add movie</option>
+          <option>Your movies</option>
+          <option>Add movie</option>
         </select>
       </div>
       <div className="hidden sm:block">
@@ -32,14 +32,14 @@ export function NavigationTabs({
             <NavLink
               to="/"
               className={activeTab === 'home' ? activeStyle : defaultStyle}
-              aria-current={activeTab === 'home' ? 'page' : 'false'}
+              aria-current={activeTab === 'home' ? 'true': 'page'}
             >
               Your movies
             </NavLink>
             <NavLink
               to="/add"
               className={activeTab === 'add' ? activeStyle : defaultStyle}
-              aria-current={activeTab === 'add' ? 'page' : 'false'}
+              aria-current={activeTab === 'add' ? 'true': 'page'}
             >
               Add movie
             </NavLink>
