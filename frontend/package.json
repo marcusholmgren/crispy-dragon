@@ -14,11 +14,11 @@
     "aws-amplify": "^3.3.17",
     "aws-amplify-react": "^4.2.21",
     "history": "^5.0.0",
-    "postcss": "^8.2.4",
+    "postcss": "^8.2.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^6.0.0-beta.0",
-    "tailwindcss": "^2.0.2"
+    "tailwindcss": "^2.0.3"
   },
   "devDependencies": {
     "@snowpack/plugin-dotenv": "^2.0.5",
@@ -32,7 +32,7 @@
     "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
     "@types/snowpack-env": "^2.3.3",
-    "@web/test-runner": "^0.12.7",
+    "@web/test-runner": "^0.12.14",
     "chai": "^4.2.0",
     "postcss-cli": "^8.3.1",
     "prettier": "^2.2.1",

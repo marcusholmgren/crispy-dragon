@@ -9,4 +9,5 @@ export interface MovieInfo {
   year: number;
   plot: string;
   actors?: string[];
+  movie?: string;
 }

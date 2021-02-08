@@ -1,19 +1,24 @@
 import { useNavigate } from 'react-router-dom';
 import { MovieRequest, addMovie } from './api';
 import { AddMovie, AppShell, SimpleSectionHeading } from './components';
-import React from 'react';
+import React, { useContext } from 'react';
+import { MoviesDataContext } from './MoviesDataContext';
 
 export function AddMoviePage() {
+  const { movies, setMovies } = useContext(MoviesDataContext);
   const navigate = useNavigate();
 
   async function onSubmit(movie: MovieRequest) {
-    const success = await addMovie(movie);
+    const newMovie = await addMovie(movie);
 
-    if (success) {
+    if (newMovie) {
+      console.log('New movie: ', JSON.stringify(newMovie, null, 2));
+      setMovies([...movies, newMovie]);
       navigate('/');
+      return true;
     }
 
-    return success;
+    return false;
   }
 
   return (

@@ -45,7 +45,18 @@ In your `.env` file you need the following variables
 SNOWPACK_PUBLIC_REGION=us-east-1
 SNOWPACK_PUBLIC_USER_POOL_ID=us-east-1_SW382wGyU
 SNOWPACK_PUBLIC_USER_POOL_WEB_CLIENT_ID=4t3RdWfp5ydwadefjthscrdrcd
+SNOWPACK_PUBLIC_API_URL=https://your-lambda.execute-api.us-east-1.amazonaws.com
 ```
+
+
+## API endpoints
+
+
+*  PUT - https://<http-api-url>.amazonaws.com/movies
+*  GET - https://<http-api-url>.amazonaws.com/movies
+*  PATCH - https://<http-api-url>.amazonaws.com/movies/{title}
+*  DELETE - https://<http-api-url>.amazonaws.com/movies/{title}
+*  POST - https://<http-api-url>.amazonaws.com/movies/{title}/attachment
 
 
 

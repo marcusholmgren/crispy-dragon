@@ -1,6 +1,10 @@
 import type { Movie } from '../models';
 import { getUserToken } from './getUserToken';
 
+interface AddMovieResponse {
+  item: Movie;
+}
+
 export interface GetMoviesResponse {
   items: Movie[];
 }
@@ -22,10 +26,41 @@ export interface UpdateMovieRequest {
   plot: string;
 }
 
+export async function uploadMovieAttachment(
+  file: File,
+  url: string,
+): Promise<boolean> {
+  const response = await fetch(url, {
+    body: file,
+    method: 'PUT',
+    mode: 'cors',
+  });
+  return response.ok;
+}
+
+export async function getUploadUrl(title: string): Promise<string> {
+  const token = await getUserToken();
+  const response = await fetch(
+    `${import.meta.env.SNOWPACK_PUBLIC_API_URL}/movies/${title}/attachment`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'omit',
+    },
+  );
+
+  return await response.json();
+}
+
 export async function deleteMovie(title: string) {
   const token = await getUserToken();
   const response = await fetch(
-    `https://cjn5ioxpab.execute-api.us-east-1.amazonaws.com/movies/${title}`,
+    `${import.meta.env.SNOWPACK_PUBLIC_API_URL}/movies/${title}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -42,7 +77,7 @@ export async function deleteMovie(title: string) {
 export async function updateMovie(title: string, movie: UpdateMovieRequest) {
   const token = await getUserToken();
   const response = await fetch(
-    `https://cjn5ioxpab.execute-api.us-east-1.amazonaws.com/movies/${title}`,
+    `${import.meta.env.SNOWPACK_PUBLIC_API_URL}/movies/${title}`,
     {
       headers: {
         'Content-Type': 'application/json',
@@ -58,10 +93,12 @@ export async function updateMovie(title: string, movie: UpdateMovieRequest) {
   return response.ok;
 }
 
-export async function addMovie(movie: MovieRequest) {
+export async function addMovie(
+  movie: MovieRequest,
+): Promise<Movie | undefined> {
   const token = await getUserToken();
   const response = await fetch(
-    'https://cjn5ioxpab.execute-api.us-east-1.amazonaws.com/movies',
+    `${import.meta.env.SNOWPACK_PUBLIC_API_URL}/movies`,
     {
       headers: {
         'Content-Type': 'application/json',
@@ -75,10 +112,8 @@ export async function addMovie(movie: MovieRequest) {
   );
 
   if (response.ok) {
-    const data = await response.json();
-    console.log(
-      `Status: ${response.status}, data: ${JSON.stringify(data, null, 2)}`,
-    );
+    const data: AddMovieResponse = await response.json();
+    return data.item;
   } else {
     const body = await response.text();
     console.log(
@@ -89,7 +124,7 @@ export async function addMovie(movie: MovieRequest) {
       )}`,
     );
   }
-  return response.ok;
+  return;
 }
 
 export async function getMovies(
@@ -97,7 +132,7 @@ export async function getMovies(
 ) {
   const token = await getUserToken();
   const response = await fetch(
-    'https://cjn5ioxpab.execute-api.us-east-1.amazonaws.com/movies',
+    `${import.meta.env.SNOWPACK_PUBLIC_API_URL}/movies`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -110,9 +145,6 @@ export async function getMovies(
   if (response.ok) {
     const data: GetMoviesResponse = await response.json();
     setMovies(data.items);
-    console.log(
-      `Status: ${response.status}, data: ${JSON.stringify(data, null, 2)}`,
-    );
   } else {
     const body = await response.text();
     console.log(

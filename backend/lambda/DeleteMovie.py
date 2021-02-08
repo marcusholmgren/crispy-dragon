@@ -4,15 +4,22 @@ import os
 import logging
 
 import boto3
-from aws_xray_sdk.core import patch_all
 from utils.parse_user_id import parse_user_id
 
-patch_all()
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 dynamodb = boto3.resource('dynamodb')
+
+attachment_s3 = boto3.client('s3')
+
+
+def delete_movie_image(user_id: str, title: str):
+    bucket_name = os.environ['MOVIES_ATTACHMENT_BUCKET']
+    object_name = f'{title}-{user_id}'
+
+    attachment_s3.delete_object(Bucket=bucket_name, Key=object_name)
 
 
 def delete_movie(user_id: str, title: str):
@@ -34,6 +41,7 @@ def delete_handler(event: Dict[str, Any], context):
     user_id = parse_user_id(headers['authorization'][len('Bearer '):])
 
     _ = delete_movie(user_id, title)
+    delete_movie_image(user_id, title)
 
     return {
         "statusCode": 204,

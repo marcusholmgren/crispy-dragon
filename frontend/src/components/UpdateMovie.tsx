@@ -35,7 +35,6 @@ export function UpdateMovie({ movie, onSubmit }: Props) {
     }
   }
 
-  console.log(`UpdateMovie: ${JSON.stringify(movie, null, 2)}`);
   const formEl = movie ? (
     <form
       className="space-y-8 divide-y divide-gray-200"
