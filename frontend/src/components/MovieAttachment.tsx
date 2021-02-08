@@ -1,46 +1,46 @@
-import * as React from "react";
-import type {Movie} from "../models";
-import {useState} from "react";
-import {Button} from "./Button";
-
+import * as React from 'react';
+import type { Movie } from '../models';
+import { useState } from 'react';
+import { Button } from './Button';
 
 interface MovieAttachmentProps {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  movie: Movie
+  movie: Movie;
 }
 
 export function MovieAttachment({ onSubmit, movie }: MovieAttachmentProps) {
-  const [filename, setFilename] = useState('')
+  const [filename, setFilename] = useState('');
 
-  function onChange(e:  React.ChangeEvent<HTMLInputElement>) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     if ((e.currentTarget.files?.length ?? 0) > 0) {
-      const first = e.currentTarget.files?.item(0)
+      const first = e.currentTarget.files?.item(0);
       if (first) {
-        setFilename(first.name)
+        setFilename(first.name);
       }
     }
   }
 
-  const attachmentEl = movie?.info?.movie ?  (
-      <div className="sm:flex">
-        <div className="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
-          <img
-                className="h-32 w-full sm:w-32 border border-gray-300 bg-white text-gray-300"
-                src={movie.info?.movie ? movie.info?.movie : "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
-                alt=""
-              />
-        </div>
-        <div>
-          <h4 className="text-lg font-bold">{movie.title}</h4>
-          <p className="mt-1">
-            {movie.info?.plot}
-          </p>
-        </div>
+  const attachmentEl = movie?.info?.movie ? (
+    <div className="sm:flex">
+      <div className="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+        <img
+          className="h-32 w-full sm:w-32 border border-gray-300 bg-white text-gray-300"
+          src={
+            movie.info?.movie
+              ? movie.info?.movie
+              : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+          }
+          alt=""
+        />
       </div>
+      <div>
+        <h4 className="text-lg font-bold">{movie.title}</h4>
+        <p className="mt-1">{movie.info?.plot}</p>
+      </div>
+    </div>
   ) : (
     <form className="grid gap-4 grid-cols-1 max-w-md" onSubmit={onSubmit}>
       <div>
-
         <div className="sm:col-span-6">
           <label
             htmlFor="cover_photo"
@@ -66,7 +66,7 @@ export function MovieAttachment({ onSubmit, movie }: MovieAttachmentProps) {
               </svg>
               <p className="text-sm text-gray-600">
                 <label className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                  {filename ? `Upload ${filename}`: "Upload a file"}
+                  {filename ? `Upload ${filename}` : 'Upload a file'}
                   <input
                     name="file"
                     type="file"
@@ -75,7 +75,6 @@ export function MovieAttachment({ onSubmit, movie }: MovieAttachmentProps) {
                     onChange={onChange}
                   />
                 </label>
-
               </p>
               <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
             </div>
@@ -89,6 +88,5 @@ export function MovieAttachment({ onSubmit, movie }: MovieAttachmentProps) {
     </form>
   );
 
-
-  return attachmentEl
+  return attachmentEl;
 }

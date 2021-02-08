@@ -172,5 +172,3 @@ export function UpdateMovie({ movie, onSubmit }: Props) {
 
   return formEl;
 }
-
-

@@ -1,8 +1,21 @@
 import React, { useContext } from 'react';
-import {AppShell, Button, DangerButton, MovieAttachment, UpdateMovie} from './components';
+import {
+  AppShell,
+  Button,
+  DangerButton,
+  MovieAttachment,
+  UpdateMovie,
+} from './components';
 import { MoviesDataContext } from './MoviesDataContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import {deleteMovie, getMovies, getUploadUrl, updateMovie, UpdateMovieRequest, uploadMovieAttachment} from './api';
+import {
+  deleteMovie,
+  getMovies,
+  getUploadUrl,
+  updateMovie,
+  UpdateMovieRequest,
+  uploadMovieAttachment,
+} from './api';
 
 export function UpdateMoviePage() {
   const { movies, setMovies } = useContext(MoviesDataContext);
@@ -19,37 +32,34 @@ export function UpdateMoviePage() {
 
   async function onDelete() {
     const success = await deleteMovie(title);
-    console.log(movies)
+    console.log(movies);
     if (success) {
-      const filtered = movies.filter(x => x.title !== title)
-      setMovies([...filtered])
+      const filtered = movies.filter((x) => x.title !== title);
+      setMovies([...filtered]);
       navigate('/');
     }
     return success;
   }
 
-
   async function uploadAttachment(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+    event.preventDefault();
     if (event.currentTarget) {
-      const x = new FormData(event.currentTarget)
-      const url = await getUploadUrl(title)
+      const x = new FormData(event.currentTarget);
+      const url = await getUploadUrl(title);
       const file = x.get('file') as File;
-      const success = await uploadMovieAttachment(file, url)
+      const success = await uploadMovieAttachment(file, url);
       if (success) {
-        navigate('/')
+        await getMovies(setMovies);
+        navigate('/');
       }
     }
   }
 
-  const movie = movies.filter((m) => m.title === title)[0]
+  const movie = movies.filter((m) => m.title === title)[0];
 
   return (
     <AppShell>
-      <UpdateMovie
-        movie={movie}
-        onSubmit={onSubmit}
-      />
+      <UpdateMovie movie={movie} onSubmit={onSubmit} />
       <div className="pt-5">
         <MovieAttachment movie={movie} onSubmit={uploadAttachment} />
       </div>
@@ -59,5 +69,3 @@ export function UpdateMoviePage() {
     </AppShell>
   );
 }
-
-

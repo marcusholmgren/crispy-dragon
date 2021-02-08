@@ -32,14 +32,14 @@ export function NavigationTabs({
             <NavLink
               to="/"
               className={activeTab === 'home' ? activeStyle : defaultStyle}
-              aria-current={activeTab === 'home' ? 'true': 'page'}
+              aria-current={activeTab === 'home' ? 'true' : 'page'}
             >
               Your movies
             </NavLink>
             <NavLink
               to="/add"
               className={activeTab === 'add' ? activeStyle : defaultStyle}
-              aria-current={activeTab === 'add' ? 'true': 'page'}
+              aria-current={activeTab === 'add' ? 'true' : 'page'}
             >
               Add movie
             </NavLink>
